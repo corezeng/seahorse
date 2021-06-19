@@ -1,2 +1,2 @@
 # seahorse
-A common modern C++ library which from work
+A common modern C++ library which born from work
