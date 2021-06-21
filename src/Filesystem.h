@@ -13,17 +13,26 @@
 #define SEAHORSE_FILESYSTEM_H
 #ifdef __cplusplus
 #include <filesystem>
-#include "../seahorse/Chars.h"
+#include "Chars.h"
+#include <vector>
 namespace seahorse {
+
+enum PathStat {
+    PS_NOT_EXISTS, // file or directory is not exists
+    PS_OK,
+};
 
 class Path {
 public:
-    Path(const tinychars &path);
+    Path(const chars &path);
     ~Path();
     std::filesystem::file_type type() const;
+    std::vector<seahorse::chars> travelAllFile();
 
 private:
-    seahorse::tinychars _path;
+    seahorse::chars _registPath;
+    std::filesystem::path _path;
+    PathStat _stat;
 };
 
 } // namespace seahorse
