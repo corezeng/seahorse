@@ -49,6 +49,12 @@ chars::chars(const tinychars &src) {
     set_data_length(src.c_str(), _length);
 }
 
+chars::chars(const chars &src) {
+    init();
+    _length = src._length;
+    set_data_length(src._data, src._length);
+}
+
 chars::chars(const char *c_str) {
     init();
     size_t len = strlen(c_str);

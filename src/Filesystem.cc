@@ -9,6 +9,9 @@ Path::Path(const chars &path) :
     }
     _stat = PS_OK;
 }
+
+Path::~Path() {
+}
 std::filesystem::file_type Path::type() const {
     // std::filesystem::file_status s(std::filesystem::status(_path));
     return std::filesystem::file_status(std::filesystem::status(_path)).type();
@@ -20,6 +23,10 @@ std::vector<seahorse::chars> Path::travelAllFile() {
         for (auto itor = std::filesystem::directory_iterator(_path.c_str()); itor != std::filesystem::directory_iterator(); ++itor) {
             switch (std::filesystem::file_status(itor->symlink_status()).type()) {
             case std::filesystem::file_type::regular: {
+                allFiles.push_back(seahorse::chars(itor->path()));
+                break;
+            }
+            case std::filesystem::file_type::directory: {
                 allFiles.push_back(seahorse::chars(itor->path()));
                 break;
             }
