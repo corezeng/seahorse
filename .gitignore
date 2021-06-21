@@ -1,0 +1,6 @@
+*.gch
+*.log
+*.tmp
+a.out
+.vscode/
+.git/

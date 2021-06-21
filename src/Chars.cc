@@ -6,79 +6,110 @@
 using namespace seahorse;
 
 chars::chars() {
-    _data = nullptr;
-    _length = 0;
+    init();
 }
 chars ::~chars() {
     clean();
 }
 
+void chars::init() {
+    _data = nullptr;
+    _length = 0;
+}
+
+void chars::set_data_length(const char *c_str, const size_t length) {
+    if (length > 0) {
+        if (c_str != nullptr) {
+            clean();
+            _data = (char *)Malloc(length + 1);
+            _length = length;
+            memcpy(_data, c_str, length);
+            _data[length] = '\0';
+        }
+    } else {
+        clean();
+    }
+}
+
 void chars::clean() {
-    // if (_data != nullptr) {
-    //     free(_data);
-    //     _length = 0;
-    // }
+    if (_data != nullptr) {
+        free(_data);
+        _length = 0;
+    }
 }
 
 chars::chars(const char *c_str, const size_t length) {
-    clean();
-    _data = (char *)Malloc(length + 1);
-    _length = length;
-    memcpy(_data, c_str, length);
-    _data[length] = '\0';
+    init();
+    set_data_length(c_str, length);
 }
 
 chars::chars(const tinychars &src) {
+    init();
     _length = src.length();
-    chars(src.c_str(), _length);
+    set_data_length(src.c_str(), _length);
 }
 
 chars::chars(const char *c_str) {
+    init();
     size_t len = strlen(c_str);
-    chars(c_str, len);
+    set_data_length(c_str, len);
 }
 
 chars::chars(const std::string &src) {
-    chars(src.c_str(), src.length());
+    init();
+    set_data_length(src.c_str(), src.length());
 }
 
 chars::chars(const bool boolen) {
+    init();
     if (boolen) {
-        chars(STR_TRUE, STR_TRUE_LEN);
+        set_data_length(STR_TRUE, STR_TRUE_LEN);
     } else {
-        chars(STR_FALSE, STR_FALSE_LEN);
+        set_data_length(STR_FALSE, STR_FALSE_LEN);
     }
 }
 
 chars::chars(const char ch) {
-    chars(&ch, 1);
+    init();
+    set_data_length(&ch, 1);
 }
 
 chars::chars(const short num) {
-    chars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 chars::chars(const int num) {
-    chars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 chars::chars(const size_t num) {
-    chars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 chars::chars(const float num) {
-    chars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 chars::chars(const double num) {
-    chars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 chars::chars(const void *ptr) {
+    init();
     if (ptr != nullptr) {
         // TODO: 添加void* 数据转string
     } else {
-        chars(STR_NULLPTR, STR_NULLPTR_LEN);
+        set_data_length(STR_NULLPTR, STR_NULLPTR_LEN);
     }
 }
 
@@ -113,29 +144,21 @@ chars *chars::dup_new() const { // TODO 最好的方式是返回一个栈对象u
 
 chars &chars::operator=(const chars &obj) {
     clean();
-    _data = (char *)Malloc(obj._length + 1);
-    _length = obj._length;
-    memcpy(_data, obj._data, obj._length);
-    _data[_length] = '\0';
+    set_data_length(obj._data, obj._length);
     return *this;
 }
 
 chars &chars::operator=(const tinychars &obj) {
     clean();
-    _data = (char *)Malloc(obj.length() + 1);
-    _length = obj.length();
-    memcpy(_data, obj.c_str(), obj.length());
-    _data[_length] = '\0';
+    set_data_length(obj.c_str(), obj.length());
     return *this;
 }
 
 chars &chars::operator=(const char *c_str) {
+    clean();
     if (c_str != nullptr) {
         size_t len = strlen(c_str);
-        _data = (char *)Malloc(len + 1);
-        _length = len;
-        memcpy(_data, c_str, len);
-        _data[_length] = '\0';
+        set_data_length(c_str, len);
     }
 
     return *this;
@@ -167,6 +190,10 @@ const bool chars::operator==(const char *c_str) const {
 }
 
 tinychars::tinychars() {
+    init();
+}
+
+void tinychars::init() {
     _data = nullptr;
 }
 
@@ -177,70 +204,94 @@ void tinychars::clean() {
     }
 }
 
-tinychars::~tinychars() {
-    clean();
-}
-
-tinychars::tinychars(const char *c_str, const size_t length) {
+void tinychars::set_data_length(const char
+                                    *c_str,
+                                const size_t length) {
     clean();
     _data = (char *)Malloc(length + 1);
     memcpy(_data, c_str, length);
     _data[length] = '\0';
 }
 
+tinychars::~tinychars() {
+    clean();
+}
+
+tinychars::tinychars(const char *c_str, const size_t length) {
+    init();
+    set_data_length(c_str, length);
+}
+
 tinychars::tinychars(const tinychars &src) {
-    tinychars(src._data, src.length());
+    init();
+    set_data_length(src._data, src.length());
 }
 
 tinychars::tinychars(const chars &src) {
-    tinychars(src.c_str(), src.length());
+    init();
+    set_data_length(src.c_str(), src.length());
 }
 
 tinychars::tinychars(const char *c_str) {
-    tinychars(c_str, strlen(c_str));
+    init();
+    set_data_length(c_str, strlen(c_str));
 }
 
 tinychars::tinychars(const std::string &src) {
-    tinychars(src.c_str(), src.length());
+    init();
+    set_data_length(src.c_str(), src.length());
 }
 
 tinychars::tinychars(const bool boolen) {
+    init();
     if (boolen) {
-        tinychars(STR_TRUE, STR_TRUE_LEN);
+        set_data_length(STR_TRUE, STR_TRUE_LEN);
     } else {
-        tinychars(STR_FALSE, STR_FALSE_LEN);
+        set_data_length(STR_FALSE, STR_FALSE_LEN);
     }
 }
 
 tinychars::tinychars(const char ch) {
-    tinychars(&ch, 1);
+    init();
+    set_data_length(&ch, 1);
 }
 
 tinychars::tinychars(const short num) {
-    tinychars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 tinychars::tinychars(const int num) {
-    tinychars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 tinychars::tinychars(const size_t num) {
-    tinychars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 tinychars::tinychars(const float num) {
-    tinychars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 tinychars::tinychars(const double num) {
-    tinychars(std::to_string(num));
+    init();
+    std::string tmp = std::to_string(num);
+    set_data_length(tmp.c_str(), tmp.length());
 }
 
 tinychars::tinychars(const void *ptr) {
+    init();
     if (ptr != nullptr) {
         // TODO: 添加void* 数据转string
     } else {
-        tinychars(STR_NULLPTR, STR_NULLPTR_LEN);
+        set_data_length(STR_NULLPTR, STR_NULLPTR_LEN);
     }
 }
 
@@ -271,21 +322,22 @@ tinychars *tinychars::dup_new() const {
 }
 
 tinychars &tinychars::operator=(const tinychars &obj) {
-    tinychars(obj._data);
+    clean();
+    set_data_length(obj._data, obj.length());
     return *this;
 }
 
 tinychars &tinychars::operator=(const chars &obj) {
-    tinychars(obj.c_str(), obj.length());
+    clean();
+    set_data_length(obj.c_str(), obj.length());
     return *this;
 }
 
 tinychars &tinychars::operator=(const char *c_str) {
+    clean();
     if (c_str != nullptr) {
         size_t len = strlen(c_str);
-        _data = (char *)Malloc(len + 1);
-        memcpy(_data, c_str, len);
-        _data[len] = '\0';
+        set_data_length(c_str, len);
     } else {
         // TODO something else
     }

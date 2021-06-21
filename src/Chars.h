@@ -63,6 +63,10 @@ public:
     const bool operator==(const self &obj) const;   // 比较obj与本对象中数据，相同返回true，否则返回false
     const bool operator==(const char *c_str) const; // 比较c_str与本对象中数据，相同返回true，否则返回false
 private:
+    inline void set_data_length(const char
+                                    *c_str,
+                                const size_t length);
+    inline void init();
     char *_data;
     size_t _length;
 #undef self
@@ -100,6 +104,11 @@ public:
     const bool operator==(const char *c_str) const; // 比较c_str与本对象中数据，相同返回true，否则返回false
 
 private:
+    inline void set_data_length(const char
+                                    *c_str,
+                                const size_t length);
+    inline void init();
+
     char *_data;
 #undef self
 };
