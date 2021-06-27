@@ -1,7 +1,7 @@
 /**
  * @file Thread.h
  * @author zengkaijun (zengkaijun@xdrsec.com)
- * @brief 暂时不可用
+ * @brief 
  * @version 0.1
  * @date 2021-06-18
  * 
@@ -18,6 +18,7 @@
 #include <condition_variable>
 #include <chrono>
 #include "Utils.h"
+#include<functional>
 
 namespace seahorse {
 
@@ -25,25 +26,32 @@ class Thread;
 
 struct ThreadArg {
     Thread &_this;
-    volatile int keepRuning; // 0: keep running, 1: exit at next loop, 2: exit right now
-    ThreadArg(Thread &self) :
-        _this(self) {
+    std::unique_ptr<void> _addOnArgs;
+    std::atomic<int> _keepRuning; // 0: keep running, 1: exit at next loop, 2: exit right now
+    ThreadArg(Thread &self,void* addOnArgs=nullptr,const int keepRunning=2) :
+        _this(self),_addOnArgs(addOnArgs),_keepRuning(keepRunning){
     }
 };
+
+typedef std::function<void(ThreadArg* threadArg)> ThreadFunc;
 
 class Thread : std::thread {
 public:
 #define self Thread
-    self();
+    self(ThreadFunc func,std::unique_ptr<void*> funcAddOnArg);
     ~self();
-    void run(bool join = no);
-    void stop(bool rightnow = yes);
+    inline void run(bool join = false);
+    inline void stop(bool rightnow = true);
+    inline void join();
 
 protected:
-    static void threadFunc();
 
 private:
-    ThreadArg _arg;
+    std::atomic_bool _isRunning;
+    std::atomic_bool _isBusy;
+    ThreadArg _threadArg;
+    std::unique_ptr<std::thread> _thread;
+    ThreadFunc _func;
 #undef self
 };
 } // namespace seahorse
