@@ -5,3 +5,6 @@ a.out
 .vscode/
 .git/
 *.test
+build/
+
+cpp_test/
