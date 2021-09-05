@@ -19,42 +19,43 @@ namespace seahorse {
 
 constexpr size_t strlength(const char* const c_str);
 
-class chars;
-
-class tinychars {
+class chars final {
 public:
-    tinychars();
-    ~tinychars();
+    chars();
+    ~chars();
     // copy constructor
-    tinychars(const tinychars& src);
-    tinychars(const std::string& src);
-    tinychars(const chars& src);
-    tinychars(const char*& src);
-    tinychars(const char& ch);
+    chars(const chars& src);
+    chars(const std::string& src);
+    chars(const char*& src);
+    chars(const char& ch);
 
-    explicit tinychars(ssize_t num);
-    explicit tinychars(size_t num);
+    explicit chars(int num);
+    explicit chars(unsigned int num);
+    explicit chars(ssize_t num);
+    explicit chars(size_t num);
 
-    tinychars(const void*& ptr);
+    chars(const void* const ptr);
 
     // move constructor 
-    tinychars(tinychars&& robj);
+    chars(chars&& robj);
 
-    tinychars& operator=(const tinychars& src);
-    tinychars& operator=(tinychars&& src);
-    tinychars& operator=(const std::string& src);
-    tinychars& operator=(const chars& src);
-    tinychars& operator=(chars&& src);
-    tinychars& operator=(const char ch);
-    tinychars& operator=(const char src[]);
+    chars& operator=(const chars& src);
+    chars& operator=(chars&& src);
+    chars& operator=(const std::string& src);
+    chars& operator=(const char ch);
+    chars& operator=(const char src[]);
 
     const size_t length() const;
     const char* c_str() const;
 
     void clear();
+    char* release();
 
-    static tinychars to_tinychars(size_t num);
-    static tinychars to_tinychars(ssize_t num);
+    static chars to_chars(unsigned int num);
+    static chars to_chars(int num);
+    static chars to_chars(size_t num);
+    static chars to_chars(ssize_t num);
+    static chars to_chars(const void* const ptr);
 
 private:
     /**
@@ -63,25 +64,10 @@ private:
      */
     inline void init();
     inline void copy_data(const char* const src, const size_t length);
-    inline void hold_data(char*& src, const size_t length);
+    inline void hold_data(char*& src);
 
 private:
     char* _data;
-};
-
-class chars : public tinychars {
-public:
-    chars();
-    ~chars();
-
-    const size_t length()const;
-    void clear();
-
-protected:
-    void init();
-
-private:
-    size_t _length;
 };
 
 } // namespace seahorse
