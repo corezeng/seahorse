@@ -14,6 +14,9 @@ echo "\033[32mbuilding seahorse project...\033[0m"
 root_dir=$(dirname $(readlink -f "$0"))
 build_dir="${root_dir}/build"
 
+if [ -d "${build_dir}" ]; then
+    rm -rf ${build_dir}
+fi
 
 if [ ! -d "${build_dir}" ]; then
     mkdir ${build_dir}
