@@ -1,13 +1,13 @@
 # seahorse
-A common modern C++ library which born from work
+A common modern C++ library which born from work.
 
 ### How to install
 1. run the build.sh
 2. library and header files will install in `/usr/local`
 
-### A faster integer transform into string
+### A fast integer transform into string
 
-chars is a tiny class, it's power like std::string but faster than std::to_string in some tests.
+chars is a tiny class, it's power like std::string, and faster than std::to_string in some tests.
 
 #### Test source code
 
