@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#ifndef SEAHORSE_MALLOC_H
-#define SEAHORSE_MALLOC_H
+#ifndef SEAHORSE_BASE_MALLOC_H
+#define SEAHORSE_BASE_MALLOC_H
 
 #ifdef __cplusplus
 #include <malloc.h>

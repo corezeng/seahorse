@@ -1,61 +1,71 @@
-// /**
-//  * @file Thread.h
-//  * @author zengkaijun (zengkaijun@xdrsec.com)
-//  * @brief 
-//  * @version 0.1
-//  * @date 2021-06-18
-//  * 
-//  * @copyright Copyright (c) 2021
-//  * 
-//  */
+/**
+*@file thread.h
+*@author core zeng (corezeng@gmail.com)
+*@brief 
+*@version 0.1
+*@date 2021-09-18
+*
+*@copyright Copyright (c) 2021
+*
+ */
 
-// #ifndef SEAHORSE_THREAD_H
-// #define SEAHORSE_THREAD_H
-// #ifdef __cplusplus
-// #include <thread>
-// #include <mutex>
-// #include <atomic>
-// #include <condition_variable>
-// #include <chrono>
-// #include "Utils.h"
-// #include<functional>
+#ifndef _SEAHORSE_BASE_THREAD_H_
+#define _SEAHORSE_BASE_THREAD_H_
 
-// namespace seahorse {
+#include <pthread.h>
+#include <memory>
 
-// class Thread;
+#include "utils.h"
+#include "chars.h"
+// #include "log.h"
 
-// struct ThreadArg {
-//     Thread &_this;
-//     std::unique_ptr<void> _addOnArgs;
-//     std::atomic<int> _keepRuning; // 0: keep running, 1: exit at next loop, 2: exit right now
-//     ThreadArg(Thread &self,void* addOnArgs=nullptr,const int keepRunning=2) :
-//         _this(self),_addOnArgs(addOnArgs),_keepRuning(keepRunning){
-//     }
-// };
+namespace seahorse {
 
-// typedef std::function<void(ThreadArg* threadArg)> ThreadFunc;
+class Thread;
 
-// class Thread : std::thread {
-// public:
-// #define self Thread
-//     self(ThreadFunc func,std::unique_ptr<void*> funcAddOnArg);
-//     ~self();
-//     inline void run(bool join = false);
-//     inline void stop(bool rightnow = true);
-//     inline void join();
+template <typename T>
+class ThreadLocal : noncopyable {
+    ThreadLocal();
+    ~ThreadLocal();
+};
 
-// protected:
+struct ThreadArgs : public noncopyable {
+    friend class Thread;
+    Thread &_this_thread;
+    std::shared_ptr<void *> _shared_args;
+    std::unique_ptr<void *> _unique_args;
 
-// private:
-//     std::atomic_bool _isRunning;
-//     std::atomic_bool _isBusy;
-//     ThreadArg _threadArg;
-//     std::unique_ptr<std::thread> _thread;
-//     ThreadFunc _func;
-// #undef self
-// };
-// } // namespace seahorse
+private:
+    ThreadArgs(Thread &thread) :
+        _this_thread(thread), _shared_args(), _unique_args() {
+    }
+    ~ThreadArgs() {
+    }
+};
 
-// #else // C interface
-// #endif
-// #endif
+class Thread : public noncopyable {
+public:
+    Thread();
+    ~Thread();
+
+    inline void set_shared_args(std::shared_ptr<void> &shared_args);
+    inline void set_unique_args(std::unique_ptr<void> &unique_args);
+
+    void run();
+
+    inline bool joinable();
+
+    inline std::unique_ptr<void *> join();
+
+private:
+    inline void init();
+
+    static void *run_thread(void *args);
+    chars _thread_name;
+    ThreadArgs _args;
+    pthread_t _pthread;
+};
+
+} // namespace seahorse
+
+#endif

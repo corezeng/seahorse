@@ -5,14 +5,14 @@ echo "\033[36m                 _
   ___  ___  __ _| |__   ___  _ __ ___  ___ 
  / __|/ _ \\/ _\` | '_ \ / _ \\| '__/ __|/ _ \\
  \__ \  __/ (_| | | | | (_) | |  \__ \  __/
- |___/\___|\__,_|_| |_|\___/|_|  |___/\___|\n\033[0m"
+ |___/\___|\__,_|_| |_|\___/|_|  |___/\___| -- dev \n\033[0m"
 
 
 sleep 1
 echo "\033[32mbuilding seahorse project...\033[0m"
 
 root_dir=$(dirname $(readlink -f "$0"))
-build_dir="${root_dir}/build"
+build_dir="${root_dir}/output"
 
 if [ -d "${build_dir}" ]; then
     rm -rf ${build_dir}

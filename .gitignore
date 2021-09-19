@@ -6,5 +6,5 @@ a.out
 .git/
 *.test
 build/
-
+output/
 cpp_test/

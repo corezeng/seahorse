@@ -23,7 +23,6 @@ public:
 private:
     noncopyable(const noncopyable& src) = delete;
 };
-
 }
 #endif
 #endif
